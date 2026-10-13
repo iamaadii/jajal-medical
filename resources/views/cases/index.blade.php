@@ -78,17 +78,19 @@
                     <td style="color: #64748b;">
                         {{ $c->surgery_date ? $c->surgery_date->format('M d, Y') : '—' }}
                     </td>
-                    <td style="text-align: right; white-space: nowrap;">
-                        <div style="display: inline-flex; gap: 0.45rem;">
-                            <a href="{{ route('cases.show', $c) }}" class="btn btn-secondary btn-sm" title="View details">View</a>
+                    <td style="text-align: right; white-space: nowrap; min-width: 190px;">
+                        <div style="display: inline-flex; align-items: center; justify-content: flex-end; gap: 0.5rem;">
+                            <a href="{{ route('cases.show', $c) }}" class="btn btn-secondary btn-sm" title="View details" style="padding: 0.45rem 0.85rem; font-weight: 700;">View</a>
                             @can('update', $c)
-                                <a href="{{ route('cases.edit', $c) }}" class="btn btn-secondary btn-sm" title="Edit case">Edit</a>
+                                <a href="{{ route('cases.edit', $c) }}" class="btn btn-secondary btn-sm" title="Edit case" style="padding: 0.45rem 0.85rem; font-weight: 700; color: var(--primary); border-color: #bae6fd;">Edit</a>
                             @endcan
                             @can('delete', $c)
-                                <form action="{{ route('cases.destroy', $c) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete case {{ $c->case_number }}?');" style="margin: 0; display: inline;">
+                                <form action="{{ route('cases.destroy', $c) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete case {{ $c->case_number }}?');" style="margin: 0; display: inline-block;">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="btn btn-danger btn-sm" title="Delete case">Delete</button>
+                                    <button type="submit" class="btn btn-danger btn-sm" title="Delete case" style="padding: 0.45rem 0.85rem; font-weight: 700; background: #dc2626; border: 1px solid #b91c1c; color: #ffffff;">
+                                        Delete
+                                    </button>
                                 </form>
                             @endcan
                         </div>

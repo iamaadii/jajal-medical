@@ -191,10 +191,10 @@
         }
 
         .main-container {
-            max-width: 1240px;
+            max-width: 1400px;
             width: 100%;
             margin: 2rem auto;
-            padding: 0 1.5rem;
+            padding: 0 1.75rem;
             flex: 1;
             animation: fadeInUp 0.45s cubic-bezier(0.16, 1, 0.3, 1);
         }
@@ -422,6 +422,70 @@
             padding: 0.2rem 0.5rem;
             border-radius: 6px;
             color: #1e293b;
+        }
+
+        .pagination {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.35rem;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            flex-wrap: wrap;
+        }
+
+        .pagination li .page-link,
+        .pagination li a,
+        .pagination li span {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 38px;
+            height: 38px;
+            padding: 0 0.75rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #475569;
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .pagination li a:hover {
+            background: var(--primary-light);
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: translateY(-1px);
+        }
+
+        .pagination li.active .page-link,
+        .pagination li.active span {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: #ffffff;
+            box-shadow: 0 2px 4px rgba(2, 132, 199, 0.3);
+        }
+
+        .pagination li.disabled .page-link,
+        .pagination li.disabled span {
+            background: #f8fafc;
+            border-color: #e2e8f0;
+            color: #94a3b8;
+            cursor: not-allowed;
+        }
+
+        nav[role="navigation"] svg {
+            width: 18px !important;
+            height: 18px !important;
+            max-width: 18px !important;
+            max-height: 18px !important;
+        }
+
+        nav[role="navigation"] .flex.justify-between {
+            display: none !important;
         }
 
         @media (max-width: 900px) {
