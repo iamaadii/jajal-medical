@@ -3,8 +3,8 @@
 @section('title', $case->exists ? 'Edit Case ' . $case->case_number : 'New Implant Case')
 
 @section('content')
-<div style="max-width: 820px; margin: 1rem auto 3rem; animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);">
-    <div style="margin-bottom: 1.75rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+<div class="form-container">
+    <div class="form-header-row">
         <div>
             <div style="display: inline-flex; align-items: center; gap: 0.4rem; color: var(--primary); font-size: 0.825rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.3rem;">
                 <span>✦</span> {{ $case->exists ? 'Case Amendment' : 'New Registration' }}
@@ -19,14 +19,14 @@
         </a>
     </div>
 
-    <div class="card" style="padding: 2.25rem; border-radius: var(--radius-lg);">
+    <div class="card form-card">
         <form method="POST" action="{{ $case->exists ? route('cases.update', $case) : route('cases.store') }}">
             @csrf
             @if ($case->exists)
                 @method('PUT')
             @endif
 
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 1.5rem;">
+            <div class="form-grid-row">
                 <div>
                     <label for="case_number" style="display: block; font-size: 0.85rem; font-weight: 700; color: #334155; margin-bottom: 0.45rem;">
                         Case Number <span style="color: #ef4444;">*</span>
@@ -50,7 +50,7 @@
                 </div>
             </div>
 
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 1.5rem;">
+            <div class="form-grid-row">
                 <div>
                     <label for="surgeon_name" style="display: block; font-size: 0.85rem; font-weight: 700; color: #334155; margin-bottom: 0.45rem;">
                         Surgeon Name <span style="color: #ef4444;">*</span>
@@ -74,12 +74,12 @@
                 </div>
             </div>
 
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+            <div class="form-grid-row">
                 <div>
                     <label for="status" style="display: block; font-size: 0.85rem; font-weight: 700; color: #334155; margin-bottom: 0.45rem;">
                         Case Status <span style="color: #ef4444;">*</span>
                     </label>
-                    <select id="status" name="status" required class="input-control {{ $errors->has('status') ? 'input-error' : '' }}" style="background: white;">
+                    <select id="status" name="status" required class="input-control {{ $errors->has('status') ? 'input-error' : '' }}">
                         @foreach (['Draft', 'Planning', 'In Review', 'Approved', 'Completed', 'Cancelled'] as $st)
                             <option value="{{ $st }}" {{ old('status', $case->status ?? 'Draft') === $st ? 'selected' : '' }}>{{ $st }}</option>
                         @endforeach
@@ -93,7 +93,7 @@
                     <label for="priority" style="display: block; font-size: 0.85rem; font-weight: 700; color: #334155; margin-bottom: 0.45rem;">
                         Priority Level <span style="color: #ef4444;">*</span>
                     </label>
-                    <select id="priority" name="priority" required class="input-control {{ $errors->has('priority') ? 'input-error' : '' }}" style="background: white;">
+                    <select id="priority" name="priority" required class="input-control {{ $errors->has('priority') ? 'input-error' : '' }}">
                         @foreach (['Low', 'Medium', 'High'] as $pr)
                             <option value="{{ $pr }}" {{ old('priority', $case->priority ?? 'Medium') === $pr ? 'selected' : '' }}>{{ $pr }}</option>
                         @endforeach
@@ -124,17 +124,85 @@
                 </div>
             </div>
 
-            <div style="display: flex; gap: 0.85rem; justify-content: flex-end; border-top: 1px solid #f1f5f9; padding-top: 1.5rem;">
+            <div class="form-actions-bar">
                 <a href="{{ $case->exists ? route('cases.show', $case) : route('cases.index') }}" class="btn btn-secondary">
                     Cancel
                 </a>
-                <button type="submit" class="btn btn-primary" style="padding: 0.75rem 1.6rem;">
+                <button type="submit" class="btn btn-primary">
                     {{ $case->exists ? 'Save Changes' : 'Create Case' }}
                 </button>
             </div>
         </form>
     </div>
 </div>
+
+<style>
+.form-container {
+    max-width: 820px;
+    margin: 1rem auto 3rem;
+    animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.form-header-row {
+    margin-bottom: 1.75rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+.form-card {
+    padding: 2.25rem;
+    border-radius: var(--radius-lg);
+}
+.form-grid-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+.form-actions-bar {
+    display: flex;
+    gap: 0.85rem;
+    justify-content: flex-end;
+    border-top: 1px solid #f1f5f9;
+    padding-top: 1.5rem;
+}
+.form-actions-bar .btn {
+    padding: 0.75rem 1.6rem;
+}
+
+@media (max-width: 640px) {
+    .form-container {
+        margin: 0.5rem auto 2rem;
+    }
+    .form-card {
+        padding: 1.35rem 1.15rem;
+    }
+    .form-header-row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.85rem;
+    }
+    .form-header-row .btn {
+        width: 100%;
+        text-align: center;
+    }
+    .form-grid-row {
+        grid-template-columns: 1fr;
+        gap: 1.15rem;
+        margin-bottom: 1.15rem;
+    }
+    .form-actions-bar {
+        flex-direction: column-reverse;
+        gap: 0.65rem;
+    }
+    .form-actions-bar .btn {
+        width: 100%;
+        text-align: center;
+        justify-content: center;
+    }
+}
+</style>
 
 <script>
     async function checkDateHoliday(dateStr) {

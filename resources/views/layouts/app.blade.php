@@ -359,9 +359,81 @@
             outline: none;
         }
 
-        .input-control:focus {
+        /* Enhanced Colored Select Dropdowns */
+        select.input-control {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-color: #f8fafc !important;
+            border-color: #cbd5e1;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%230284c7' stroke-width='2.5'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E") !important;
+            background-repeat: no-repeat !important;
+            background-position: right 0.85rem center !important;
+            background-size: 16px 16px !important;
+            padding-right: 2.4rem !important;
+            font-weight: 600;
+            cursor: pointer;
+            color: #1e293b;
+        }
+
+        select.input-control:hover {
             border-color: var(--primary);
+            background-color: #ffffff !important;
+            box-shadow: 0 2px 4px rgba(2, 132, 199, 0.08);
+        }
+
+        select.input-control:focus {
+            border-color: var(--primary);
+            background-color: #ffffff !important;
             box-shadow: 0 0 0 4px var(--primary-glow);
+        }
+
+        /* Color styling for options */
+        select.input-control option {
+            font-weight: 600;
+            padding: 0.5rem 0.75rem;
+            background: #ffffff;
+            color: #1e293b;
+        }
+
+        select.input-control option[value="High"] {
+            color: #dc2626;
+            background: #fef2f2;
+        }
+
+        select.input-control option[value="Medium"] {
+            color: #d97706;
+            background: #fffbeb;
+        }
+
+        select.input-control option[value="Low"] {
+            color: #16a34a;
+            background: #f0fdf4;
+        }
+
+        select.input-control option[value="Approved"] {
+            color: #047857;
+            background: #ecfdf5;
+        }
+
+        select.input-control option[value="Planning"] {
+            color: #1d4ed8;
+            background: #eff6ff;
+        }
+
+        select.input-control option[value="In Review"] {
+            color: #b45309;
+            background: #fefce8;
+        }
+
+        select.input-control option[value="Completed"] {
+            color: #0f766e;
+            background: #f0fdfa;
+        }
+
+        select.input-control option[value="Cancelled"] {
+            color: #64748b;
+            background: #f8fafc;
         }
 
         .input-error {
@@ -430,7 +502,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 0.35rem;
+            gap: 0.5rem;
             list-style: none;
             padding: 0;
             margin: 0;
@@ -443,15 +515,15 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            min-width: 38px;
-            height: 38px;
-            padding: 0 0.75rem;
+            min-width: 40px;
+            height: 40px;
+            padding: 0 0.85rem;
             font-size: 0.875rem;
             font-weight: 600;
             color: #475569;
             background: #ffffff;
             border: 1px solid var(--border-color);
-            border-radius: 8px;
+            border-radius: 10px;
             text-decoration: none;
             transition: var(--transition);
         }
@@ -468,7 +540,7 @@
             background: var(--primary);
             border-color: var(--primary);
             color: #ffffff;
-            box-shadow: 0 2px 4px rgba(2, 132, 199, 0.3);
+            box-shadow: 0 2px 6px rgba(2, 132, 199, 0.35);
         }
 
         .pagination li.disabled .page-link,
@@ -477,6 +549,83 @@
             border-color: #e2e8f0;
             color: #94a3b8;
             cursor: not-allowed;
+        }
+
+        /* Dedicated bootstrap pagination wrapper rules */
+        nav.d-flex, nav[role="navigation"] {
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            gap: 1.25rem !important;
+            width: 100% !important;
+            margin: 1.5rem 0 1rem !important;
+        }
+
+        /* Hide the mobile redundant previous/next stacked bar */
+        nav .d-sm-none, nav > div:first-child.flex.gap-2 {
+            display: none !important;
+        }
+
+        /* Show clean full pagination on all devices */
+        nav .d-none.flex-sm-fill, nav > div:last-child {
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            gap: 1rem !important;
+            width: 100% !important;
+        }
+
+        @media (min-width: 640px) {
+            nav.d-flex, nav[role="navigation"] {
+                flex-direction: row !important;
+                justify-content: space-between !important;
+            }
+            nav .d-none.flex-sm-fill, nav > div:last-child {
+                flex-direction: row !important;
+                justify-content: space-between !important;
+            }
+        }
+
+        .small.text-muted {
+            font-size: 0.875rem !important;
+            color: #64748b !important;
+            text-align: center !important;
+            margin: 0.35rem 0 !important;
+        }
+
+        .small.text-muted .fw-semibold {
+            color: #1e293b !important;
+            font-weight: 700 !important;
+        }
+
+        nav[role="navigation"] {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.25rem;
+            width: 100%;
+            margin: 1.5rem 0;
+        }
+
+        /* Hide duplicate raw Previous/Next block in mobile Tailwind view */
+        nav[role="navigation"] > div:first-child.flex.gap-2.items-center.justify-between {
+            display: none !important;
+        }
+
+        /* Ensure full navigation bar is visible and nicely styled */
+        nav[role="navigation"] > div:last-child {
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            gap: 1rem !important;
+            width: 100% !important;
+        }
+
+        @media (min-width: 640px) {
+            nav[role="navigation"] > div:last-child {
+                flex-direction: row !important;
+                justify-content: space-between !important;
+            }
         }
 
         nav[role="navigation"] svg {
@@ -490,17 +639,131 @@
             display: none !important;
         }
 
+        nav[role="navigation"] p {
+            margin: 0 !important;
+            font-size: 0.875rem !important;
+            color: #64748b !important;
+            text-align: center !important;
+        }
+
+        nav[role="navigation"] p span {
+            font-weight: 700 !important;
+            color: #1e293b !important;
+        }
+
+        nav[role="navigation"] span.inline-flex.shadow-sm {
+            display: inline-flex !important;
+            gap: 0.35rem !important;
+            box-shadow: none !important;
+            flex-wrap: wrap !important;
+            justify-content: center !important;
+        }
+
+        nav[role="navigation"] span.inline-flex.shadow-sm > span,
+        nav[role="navigation"] span.inline-flex.shadow-sm > a {
+            border-radius: 8px !important;
+            border: 1px solid var(--border-color) !important;
+            min-width: 38px !important;
+            height: 38px !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            padding: 0 0.75rem !important;
+            font-size: 0.875rem !important;
+            font-weight: 600 !important;
+            color: #334155 !important;
+            background: #ffffff !important;
+            text-decoration: none !important;
+            transition: var(--transition) !important;
+            margin: 0 1px !important;
+        }
+
+        nav[role="navigation"] span.inline-flex.shadow-sm > span[aria-current="page"] > span,
+        nav[role="navigation"] span.inline-flex.shadow-sm > span[aria-current="page"] {
+            background: var(--primary) !important;
+            color: #ffffff !important;
+            border-color: var(--primary) !important;
+            box-shadow: 0 2px 6px rgba(2, 132, 199, 0.3) !important;
+        }
+
+        nav[role="navigation"] span.inline-flex.shadow-sm > a:hover {
+            background: var(--primary-light) !important;
+            color: var(--primary) !important;
+            border-color: var(--primary) !important;
+            transform: translateY(-1px) !important;
+        }
+
+        .pagination-summary {
+            font-size: 0.85rem;
+            color: #64748b;
+            text-align: center;
+            margin-bottom: 0.75rem;
+            font-weight: 500;
+        }
+
+        .mobile-menu-toggle {
+            display: none;
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0.45rem 0.65rem;
+            font-size: 1.25rem;
+            color: #334155;
+            cursor: pointer;
+            box-shadow: var(--shadow-sm);
+            line-height: 1;
+            transition: var(--transition);
+        }
+
+        .mobile-menu-toggle:hover {
+            background: #f8fafc;
+            color: var(--primary);
+        }
+
         @media (max-width: 900px) {
             .navbar {
-                padding: 1rem;
-                flex-direction: column;
-                gap: 1rem;
-                align-items: stretch;
+                padding: 0.85rem 1.25rem;
+                flex-wrap: wrap;
+            }
+            .mobile-menu-toggle {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
             }
             .nav-links {
-                justify-content: space-between;
-                flex-wrap: wrap;
-                gap: 0.6rem;
+                display: none;
+                width: 100%;
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.5rem;
+                margin-top: 0.85rem;
+                padding-top: 0.85rem;
+                border-top: 1px solid var(--border-color);
+            }
+            .nav-links.is-open {
+                display: flex;
+                animation: fadeInDown 0.25s ease-out;
+            }
+            .nav-links .nav-link {
+                padding: 0.75rem 1rem;
+                border-radius: 10px;
+                background: #f8fafc;
+                text-align: center;
+            }
+            .nav-links .nav-link.active {
+                background: var(--primary-light);
+            }
+            .user-badge {
+                justify-content: center;
+                padding: 0.65rem 1rem;
+                background: #f1f5f9;
+                border-radius: 10px;
+            }
+            .logout-btn {
+                width: 100%;
+                padding: 0.7rem 1rem;
+                font-size: 0.875rem;
+                border-radius: 10px;
             }
             .main-container {
                 padding: 0 1rem;
@@ -511,42 +774,60 @@
                 -webkit-overflow-scrolling: touch;
             }
         }
-
-        @media (max-width: 600px) {
-            .nav-links {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            .user-badge {
-                justify-content: center;
-            }
-            .btn {
-                width: 100%;
-            }
-        }
     </style>
 </head>
 <body>
     <header class="navbar">
-        <a href="{{ route('dashboard') }}" class="brand-logo">
-            <span class="brand-icon">+</span>
-            <span>Jajal Medical</span>
-        </a>
+        <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; max-width: 1400px; margin: 0 auto;">
+            <a href="{{ route('dashboard') }}" class="brand-logo">
+                <span class="brand-icon">+</span>
+                <span>Jajal Medical</span>
+            </a>
+            @auth
+                <button type="button" class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle Navigation">
+                    <span id="menuIcon">☰</span>
+                </button>
+            @endauth
+        </div>
+
         @auth
-            <nav class="nav-links">
-                <a href="{{ route('dashboard') }}" class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">Dashboard</a>
-                <a href="{{ route('cases.index') }}" class="nav-link {{ request()->routeIs('cases.*') ? 'active' : '' }}">Case Directory</a>
-                <div class="user-badge">
-                    <span>{{ Auth::user()->name }}</span>
-                    <span class="role-pill {{ strtolower(Auth::user()->role) }}">{{ Auth::user()->role }}</span>
-                </div>
-                <form action="{{ route('logout') }}" method="POST" style="margin: 0;">
-                    @csrf
-                    <button type="submit" class="btn btn-secondary btn-sm">Log out</button>
-                </form>
-            </nav>
+            <div style="width: 100%; max-width: 1400px; margin: 0 auto;">
+                <nav class="nav-links" id="primaryNav">
+                    <a href="{{ route('dashboard') }}" class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">Dashboard</a>
+                    <a href="{{ route('cases.index') }}" class="nav-link {{ request()->routeIs('cases.*') ? 'active' : '' }}">Case Directory</a>
+                    <div class="user-badge">
+                        <span>{{ Auth::user()->name }}</span>
+                        <span class="role-pill {{ strtolower(Auth::user()->role) }}">{{ Auth::user()->role }}</span>
+                    </div>
+                    <form action="{{ route('logout') }}" method="POST" style="margin: 0;" onsubmit="return confirm('Are you sure you want to log out of your session?');">
+                        @csrf
+                        <button type="submit" class="btn btn-secondary btn-sm logout-btn" title="Sign out of account">
+                            <span>Log out</span>
+                        </button>
+                    </form>
+                </nav>
+            </div>
         @endauth
     </header>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Disable browser auto-scrolling restoration on refresh
+            if ('scrollRestoration' in history) {
+                history.scrollRestoration = 'manual';
+            }
+
+            const toggle = document.getElementById('mobileMenuToggle');
+            const nav = document.getElementById('primaryNav');
+            const menuIcon = document.getElementById('menuIcon');
+            if (toggle && nav) {
+                toggle.addEventListener('click', function () {
+                    const isOpen = nav.classList.toggle('is-open');
+                    menuIcon.textContent = isOpen ? '✕' : '☰';
+                });
+            }
+        });
+    </script>
 
     <main class="main-container">
         @if (session('success'))
@@ -565,5 +846,60 @@
 
         @yield('content')
     </main>
+
+    <!-- Global Center Delete Confirmation Modal -->
+    <div id="deleteModalBackdrop" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.65); backdrop-filter: blur(4px); z-index: 9999; align-items: center; justify-content: center; padding: 1rem; animation: fadeInDown 0.2s ease;">
+        <div style="background: #ffffff; border-radius: 18px; max-width: 440px; width: 100%; box-shadow: var(--shadow-lg); border: 1px solid #e2e8f0; overflow: hidden; animation: scaleIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);">
+            <div style="padding: 1.75rem 1.5rem 1.25rem; text-align: center;">
+                <div style="width: 56px; height: 56px; background: #fee2e2; color: #dc2626; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 1.6rem; margin-bottom: 1rem; border: 4px solid #fef2f2;">
+                    🗑️
+                </div>
+                <h3 style="font-size: 1.25rem; font-weight: 800; color: #0f172a; margin-bottom: 0.4rem;">Are you sure?</h3>
+                <p id="deleteModalMessage" style="color: #64748b; font-size: 0.9rem; line-height: 1.5; margin: 0;">
+                    Are you sure you want to delete this case? This action cannot be undone.
+                </p>
+            </div>
+            <div style="background: #f8fafc; padding: 1rem 1.5rem; display: flex; gap: 0.75rem; border-top: 1px solid #e2e8f0;">
+                <button type="button" onclick="closeDeleteModal()" class="btn btn-secondary" style="flex: 1; padding: 0.7rem;">
+                    Cancel
+                </button>
+                <form id="deleteModalForm" method="POST" action="" style="flex: 1; margin: 0;">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-danger" style="width: 100%; padding: 0.7rem; background: #dc2626; border-color: #b91c1c;">
+                        Yes, Delete
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openDeleteModal(actionUrl, caseNumber) {
+            const backdrop = document.getElementById('deleteModalBackdrop');
+            const form = document.getElementById('deleteModalForm');
+            const msg = document.getElementById('deleteModalMessage');
+            if (form && backdrop && msg) {
+                form.action = actionUrl;
+                msg.innerHTML = `Are you sure you want to delete case <strong>${caseNumber}</strong>?<br><span style="font-size: 0.8rem; color: #ef4444;">This record will be permanently removed.</span>`;
+                backdrop.style.display = 'flex';
+            }
+        }
+
+        function closeDeleteModal() {
+            const backdrop = document.getElementById('deleteModalBackdrop');
+            if (backdrop) {
+                backdrop.style.display = 'none';
+            }
+        }
+
+        // Close on escape key or clicking backdrop
+        window.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeDeleteModal();
+        });
+        document.getElementById('deleteModalBackdrop')?.addEventListener('click', function(e) {
+            if (e.target === this) closeDeleteModal();
+        });
+    </script>
 </body>
 </html>

@@ -38,38 +38,74 @@
     .card-data-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 0.75rem 1rem;
+        gap: 0.85rem 1.15rem;
         background: #f8fafc;
-        padding: 0.85rem 1rem;
+        padding: 0.95rem 1rem;
         border-radius: var(--radius-sm);
         border: 1px solid #f1f5f9;
     }
 
+    .card-data-item {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+    }
+
     .card-data-label {
-        font-size: 0.725rem;
+        font-size: 0.72rem;
         text-transform: uppercase;
         color: #64748b;
         font-weight: 700;
         letter-spacing: 0.04em;
+        line-height: 1.2;
     }
 
     .card-data-value {
         font-size: 0.875rem;
         font-weight: 600;
         color: #1e293b;
-        margin-top: 0.15rem;
+        margin-top: 0.35rem;
+        display: flex;
+        align-items: center;
+        min-height: 24px;
     }
 
     .card-actions-row {
         display: flex;
         gap: 0.5rem;
-        margin-top: 0.25rem;
+        margin-top: 0.4rem;
+        align-items: stretch;
     }
 
-    .card-actions-row .btn {
-        flex: 1;
-        padding: 0.55rem;
+    .card-actions-row .btn,
+    .card-actions-row form button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        min-height: 38px;
+        padding: 0.55rem 0.65rem;
         font-size: 0.85rem;
+        font-weight: 600;
+        line-height: 1.2;
+        border-radius: 8px;
+    }
+
+    .card-actions-row .btn-view {
+        flex: 1.2;
+    }
+
+    .card-actions-row .btn-edit {
+        flex: 1;
+    }
+
+    .card-actions-row form {
+        margin: 0;
+        flex: 1;
+    }
+
+    .card-actions-row form button {
+        width: 100%;
     }
 
     @media (max-width: 820px) {
@@ -79,17 +115,49 @@
         .mobile-cards-view {
             display: flex !important;
         }
+        .filter-card {
+            padding: 1rem !important;
+        }
         .filter-form {
             flex-direction: column !important;
             align-items: stretch !important;
+            gap: 0.65rem !important;
+        }
+        .filter-input-search,
+        .filter-select-group {
+            width: 100% !important;
+            min-width: 100% !important;
         }
         .filter-actions {
             display: flex;
             gap: 0.5rem;
             width: 100%;
+            margin-top: 0.25rem;
         }
         .filter-actions .btn {
             flex: 1;
+            padding: 0.75rem 1rem !important;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .case-card-item {
+            padding: 1rem;
+        }
+        .card-data-grid {
+            padding: 0.75rem 0.85rem;
+            gap: 0.75rem 0.85rem;
+        }
+    }
+
+    @media (max-width: 380px) {
+        .card-actions-row {
+            flex-direction: column;
+            gap: 0.45rem;
+        }
+        .card-actions-row .btn,
+        .card-actions-row form button {
+            width: 100%;
         }
     }
 </style>
@@ -106,23 +174,23 @@
     @endcan
 </div>
 
-<div class="card" style="margin-bottom: 1.75rem; padding: 1.25rem;">
+<div class="card filter-card" style="margin-bottom: 1.75rem; padding: 1.25rem;">
     <form method="GET" action="{{ route('cases.index') }}" class="filter-form" style="display: flex; gap: 0.85rem; flex-wrap: wrap; align-items: center;">
-        <div style="flex: 2; min-width: 220px; position: relative;">
+        <div class="filter-input-search" style="flex: 2; min-width: 220px; position: relative;">
             <input type="text" name="search" value="{{ request('search') }}" placeholder="Search Case # or Surgeon..."
                 class="input-control" style="padding-left: 2.5rem;">
             <svg style="position: absolute; left: 0.85rem; top: 50%; transform: translateY(-50%); color: #94a3b8;" width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
         </div>
-        <div style="flex: 1; min-width: 150px;">
-            <select name="status" class="input-control" style="background: white;">
+        <div class="filter-select-group" style="flex: 1; min-width: 140px;">
+            <select name="status" class="input-control">
                 <option value="">All Statuses</option>
                 @foreach (['Draft', 'Planning', 'In Review', 'Approved', 'Completed', 'Cancelled'] as $st)
                     <option value="{{ $st }}" {{ request('status') === $st ? 'selected' : '' }}>{{ $st }}</option>
                 @endforeach
             </select>
         </div>
-        <div style="flex: 1; min-width: 140px;">
-            <select name="priority" class="input-control" style="background: white;">
+        <div class="filter-select-group" style="flex: 1; min-width: 140px;">
+            <select name="priority" class="input-control">
                 <option value="">All Priorities</option>
                 @foreach (['High', 'Medium', 'Low'] as $pr)
                     <option value="{{ $pr }}" {{ request('priority') === $pr ? 'selected' : '' }}>{{ $pr }} Priority</option>
@@ -226,13 +294,13 @@
                                 <a href="{{ route('cases.edit', $c) }}" class="btn btn-secondary btn-sm" title="Edit case" style="padding: 0.45rem 0.85rem; font-weight: 700; color: var(--primary); border-color: #bae6fd;">Edit</a>
                             @endcan
                             @can('delete', $c)
-                                <form action="{{ route('cases.destroy', $c) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete case {{ $c->case_number }}?');" style="margin: 0; display: inline-block;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger btn-sm" title="Delete case" style="padding: 0.45rem 0.85rem; font-weight: 700; background: #dc2626; border: 1px solid #b91c1c; color: #ffffff;">
-                                        Delete
-                                    </button>
-                                </form>
+                                <button type="button" 
+                                    onclick="openDeleteModal('{{ route('cases.destroy', $c) }}', '{{ $c->case_number }}')" 
+                                    class="btn btn-danger btn-sm" 
+                                    title="Delete case" 
+                                    style="padding: 0.45rem 0.85rem; font-weight: 700; background: #dc2626; border: 1px solid #b91c1c; color: #ffffff;">
+                                    Delete
+                                </button>
                             @endcan
                         </div>
                     </td>
@@ -274,38 +342,39 @@
             </div>
 
             <div class="card-data-grid">
-                <div>
+                <div class="card-data-item">
                     <div class="card-data-label">Patient Ref</div>
-                    <div class="card-data-value"><span class="code-pill" style="font-size: 0.75rem;">{{ $c->patient_reference }}</span></div>
+                    <div class="card-data-value"><span class="code-pill" style="font-size: 0.775rem;">{{ $c->patient_reference }}</span></div>
                 </div>
-                <div>
+                <div class="card-data-item">
                     <div class="card-data-label">Priority</div>
                     <div class="card-data-value">
-                        <span class="priority-indicator priority-{{ $c->priority }}">
+                        <span class="priority-indicator priority-{{ $c->priority }}" style="font-size: 0.85rem;">
                             <span class="priority-dot"></span>
                             <span>{{ $c->priority }}</span>
                         </span>
                     </div>
                 </div>
-                <div style="grid-column: span 2;">
+                <div class="card-data-item" style="grid-column: span 2;">
                     <div class="card-data-label">Surgery Date</div>
-                    <div class="card-data-value">{{ $c->surgery_date ? $c->surgery_date->format('M d, Y') : 'Not scheduled' }}</div>
+                    <div class="card-data-value" style="color: #334155; font-size: 0.875rem;">
+                        {{ $c->surgery_date ? $c->surgery_date->format('M d, Y') : 'Not scheduled' }}
+                    </div>
                 </div>
             </div>
 
             <div class="card-actions-row">
-                <a href="{{ route('cases.show', $c) }}" class="btn btn-secondary">View Details</a>
+                <a href="{{ route('cases.show', $c) }}" class="btn btn-secondary btn-view">View Details</a>
                 @can('update', $c)
-                    <a href="{{ route('cases.edit', $c) }}" class="btn btn-secondary" style="color: var(--primary); border-color: #bae6fd;">Edit</a>
+                    <a href="{{ route('cases.edit', $c) }}" class="btn btn-secondary btn-edit" style="color: var(--primary); border-color: #bae6fd;">Edit</a>
                 @endcan
                 @can('delete', $c)
-                    <form action="{{ route('cases.destroy', $c) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete case {{ $c->case_number }}?');" style="margin: 0; flex: 1;">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-danger" style="width: 100%; background: #dc2626; border-color: #b91c1c;">
-                            Delete
-                        </button>
-                    </form>
+                    <button type="button" 
+                        onclick="openDeleteModal('{{ route('cases.destroy', $c) }}', '{{ $c->case_number }}')" 
+                        class="btn btn-danger" 
+                        style="background: #dc2626; border-color: #b91c1c; flex: 1;">
+                        Delete
+                    </button>
                 @endcan
             </div>
         </div>
@@ -318,7 +387,7 @@
     @endforelse
 </div>
 
-<div style="margin-top: 2rem;">
+<div class="pagination-wrapper" style="margin-top: 2.25rem; display: flex; justify-content: center; align-items: center; width: 100%;">
     {{ $cases->links() }}
 </div>
 @endsection

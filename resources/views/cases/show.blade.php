@@ -3,8 +3,8 @@
 @section('title', 'Case Details - ' . $case->case_number)
 
 @section('content')
-<div style="max-width: 900px; margin: 1rem auto 3rem; animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);">
-    <div style="margin-bottom: 1.75rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+<div class="show-case-container">
+    <div class="show-header-row">
         <div>
             <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
                 <span class="code-pill" style="font-size: 1.25rem; font-weight: 800; color: var(--primary); background: var(--primary-light); padding: 0.3rem 0.8rem; border-radius: 8px;">
@@ -16,30 +16,30 @@
             </div>
             <p style="color: #64748b; font-size: 0.9rem; margin-top: 0.35rem;">Medical device surgical implant case record</p>
         </div>
-        <div style="display: flex; gap: 0.6rem; flex-wrap: wrap;">
+        <div class="show-action-btns">
             <a href="{{ route('cases.index') }}" class="btn btn-secondary btn-sm">&larr; Back to list</a>
             @can('update', $case)
                 <a href="{{ route('cases.edit', $case) }}" class="btn btn-primary btn-sm">Edit Case</a>
             @endcan
             @can('delete', $case)
-                <form action="{{ route('cases.destroy', $case) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete case {{ $case->case_number }}?');" style="margin: 0; display: inline;">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                </form>
+                <button type="button" 
+                    onclick="openDeleteModal('{{ route('cases.destroy', $case) }}', '{{ $case->case_number }}')" 
+                    class="btn btn-danger btn-sm">
+                    Delete
+                </button>
             @endcan
         </div>
     </div>
 
-    <div class="card" style="padding: 0; overflow: hidden; border-radius: var(--radius-lg);">
-        <div style="padding: 1.35rem 1.75rem; background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%); border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+    <div class="card show-details-card" style="padding: 0; overflow: hidden; border-radius: var(--radius-lg);">
+        <div class="show-card-header" style="padding: 1.35rem 1.75rem; background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%); border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
             <span style="font-weight: 800; color: #1e293b; font-size: 1rem; letter-spacing: -0.01em;">Technical Specifications & Clinical Parameters</span>
             <span style="font-size: 0.8rem; color: #64748b; font-weight: 600;">System Record #{{ $case->id }}</span>
         </div>
         
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.75rem; padding: 1.75rem;">
-            <div>
-                <span style="font-size: 0.775rem; text-transform: uppercase; color: #64748b; font-weight: 700; letter-spacing: 0.05em;">Case Number</span>
+        <div class="show-specs-grid">
+            <div class="spec-field-item">
+                <span class="spec-label">Case Number</span>
                 <p style="font-size: 1.15rem; font-weight: 800; color: var(--primary); margin-top: 0.35rem;">
                     {{ $case->case_number }}
                 </p>
@@ -118,4 +118,74 @@
         </div>
     </div>
 </div>
+
+<style>
+.show-case-container {
+    max-width: 900px;
+    margin: 1rem auto 3rem;
+    animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.show-header-row {
+    margin-bottom: 1.75rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+.show-action-btns {
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+}
+.show-specs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.75rem;
+    padding: 1.75rem;
+}
+.spec-label {
+    font-size: 0.775rem;
+    text-transform: uppercase;
+    color: #64748b;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    display: block;
+}
+
+@media (max-width: 640px) {
+    .show-case-container {
+        margin: 0.5rem auto 2rem;
+    }
+    .show-header-row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1rem;
+    }
+    .show-action-btns {
+        width: 100%;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.5rem;
+    }
+    .show-action-btns a,
+    .show-action-btns button {
+        text-align: center;
+        justify-content: center;
+        padding: 0.65rem 0.75rem;
+        font-size: 0.85rem;
+    }
+    .show-action-btns a:first-child {
+        grid-column: span 2;
+    }
+    .show-card-header {
+        padding: 1.1rem 1.25rem !important;
+    }
+    .show-specs-grid {
+        grid-template-columns: 1fr;
+        gap: 1.25rem;
+        padding: 1.25rem;
+    }
+}
+</style>
 @endsection
