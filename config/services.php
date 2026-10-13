@@ -35,4 +35,9 @@ return [
         ],
     ],
 
+    'nager_date' => [
+        'url' => env('NAGER_DATE_API_URL', 'https://date.nager.at/api/v3'),
+        'timeout' => env('NAGER_DATE_TIMEOUT', 3),
+    ],
+
 ];

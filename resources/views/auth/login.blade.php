@@ -54,6 +54,7 @@
             </div>
             <div style="display: flex; flex-direction: column; gap: 0.35rem;">
                 <div><span class="role-pill admin" style="font-size: 0.65rem;">Admin</span> <code>admin@jajalmedical.com</code> / <code>password123</code></div>
+                <div><span class="role-pill engineer" style="font-size: 0.65rem; background: #fef3c7; color: #92400e; border: 1px solid #fde68a;">Engineer</span> <code>engineer@jajalmedical.com</code> / <code>password123</code></div>
                 <div><span class="role-pill viewer" style="font-size: 0.65rem;">Viewer</span> <code>viewer@jajalmedical.com</code> / <code>password123</code></div>
             </div>
         </div>

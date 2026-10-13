@@ -9,6 +9,8 @@ use App\Models\MedicalCase;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
 
 class CaseWebController extends Controller
@@ -40,9 +42,17 @@ class CaseWebController extends Controller
             $query->where('status', $request->input('status'));
         }
 
-        $cases = $query->orderBy('id', 'asc')->paginate(10)->withQueryString();
+        if ($request->filled('priority')) {
+            $query->where('priority', $request->input('priority'));
+        }
 
-        return view('cases.index', compact('cases'));
+        $allowedSortColumns = ['id', 'case_number', 'patient_reference', 'surgeon_name', 'status', 'priority', 'surgery_date'];
+        $sortBy = in_array($request->input('sort'), $allowedSortColumns) ? $request->input('sort') : 'id';
+        $direction = strtolower($request->input('direction')) === 'desc' ? 'desc' : 'asc';
+
+        $cases = $query->orderBy($sortBy, $direction)->paginate(10)->withQueryString();
+
+        return view('cases.index', compact('cases', 'sortBy', 'direction'));
     }
 
     public function create(): View
@@ -50,7 +60,9 @@ class CaseWebController extends Controller
         Gate::authorize('create', MedicalCase::class);
 
         $case = new MedicalCase();
-        return view('cases.form', compact('case'));
+        $todayHolidays = $this->fetchTodayPublicHolidays();
+
+        return view('cases.form', compact('case', 'todayHolidays'));
     }
 
     public function store(StoreCaseRequest $request): RedirectResponse
@@ -77,7 +89,8 @@ class CaseWebController extends Controller
     {
         Gate::authorize('update', $case);
 
-        return view('cases.form', compact('case'));
+        $todayHolidays = $this->fetchTodayPublicHolidays();
+        return view('cases.form', compact('case', 'todayHolidays'));
     }
 
     public function update(UpdateCaseRequest $request, MedicalCase $case): RedirectResponse
@@ -96,5 +109,29 @@ class CaseWebController extends Controller
         $case->delete();
 
         return redirect()->route('cases.index')->with('success', 'Case deleted successfully.');
+    }
+
+    private function fetchTodayPublicHolidays(): array
+    {
+        $apiUrl = config('services.nager_date.url', env('NAGER_DATE_API_URL', 'https://date.nager.at/api/v3'));
+        $timeout = (int) config('services.nager_date.timeout', env('NAGER_DATE_TIMEOUT', 3));
+        $year = now()->year;
+        $today = now()->format('Y-m-d');
+
+        try {
+            $response = Http::timeout($timeout)
+                ->acceptJson()
+                ->get("{$apiUrl}/PublicHolidays/{$year}/US");
+
+            if ($response->successful()) {
+                $holidays = $response->json();
+                $matched = array_filter($holidays, fn ($h) => ($h['date'] ?? '') === $today);
+                return array_values($matched);
+            }
+        } catch (\Throwable $e) {
+            Log::warning('Nager.Date public API call failed gracefully: ' . $e->getMessage());
+        }
+
+        return [];
     }
 }

@@ -44,6 +44,11 @@ class User extends Authenticatable
         return strtolower($this->role) === 'admin';
     }
 
+    public function isEngineer(): bool
+    {
+        return strtolower($this->role) === 'engineer';
+    }
+
     public function isViewer(): bool
     {
         return strtolower($this->role) === 'viewer';

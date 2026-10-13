@@ -64,7 +64,8 @@ Access the application at `http://localhost:8000`.
 
 | Role | Email | Password | Permissions |
 |---|---|---|---|
-| **Admin** | `admin@jajalmedical.com` | `password123` | View, Create, Edit, Delete cases |
+| **Admin** | `admin@jajalmedical.com` | `password123` | Full access: View, Create, Edit, Delete |
+| **Engineer** | `engineer@jajalmedical.com` | `password123` | View, Create, Edit (cannot delete) |
 | **Viewer** | `viewer@jajalmedical.com` | `password123` | View only (blocked from edit & delete) |
 
 ---

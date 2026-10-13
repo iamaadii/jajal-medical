@@ -190,4 +190,46 @@ class CaseManagementFeatureTest extends TestCase
             'id' => $case->id,
         ]);
     }
+
+    public function test_engineer_can_create_and_edit_case_but_cannot_delete(): void
+    {
+        $engineer = User::factory()->create([
+            'email' => 'engineer_test@jajalmedical.com',
+            'role' => 'Engineer',
+            'password' => bcrypt('password123'),
+        ]);
+
+        $caseData = [
+            'case_number' => 'CASE-ENG-001',
+            'patient_reference' => 'PAT-ENG',
+            'surgeon_name' => 'Dr. Wilson',
+            'implant_type' => 'Spinal Cage',
+            'status' => 'Planning',
+            'priority' => 'Medium',
+        ];
+
+        // Engineer can create
+        $createResponse = $this->actingAs($engineer)->post('/cases', $caseData);
+        $createResponse->assertRedirect('/cases');
+        $this->assertDatabaseHas('cases', ['case_number' => 'CASE-ENG-001']);
+
+        $case = MedicalCase::where('case_number', 'CASE-ENG-001')->first();
+
+        // Engineer can edit
+        $updateResponse = $this->actingAs($engineer)->put("/cases/{$case->id}", [
+            'case_number' => 'CASE-ENG-001',
+            'patient_reference' => 'PAT-ENG',
+            'surgeon_name' => 'Dr. Wilson',
+            'implant_type' => 'Spinal Cage',
+            'status' => 'In Review',
+            'priority' => 'High',
+        ]);
+        $updateResponse->assertRedirect("/cases/{$case->id}");
+        $this->assertEquals('In Review', $case->fresh()->status);
+
+        // Engineer CANNOT delete (403)
+        $deleteResponse = $this->actingAs($engineer)->delete("/cases/{$case->id}");
+        $deleteResponse->assertStatus(403);
+        $this->assertDatabaseHas('cases', ['id' => $case->id]);
+    }
 }

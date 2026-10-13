@@ -113,7 +113,7 @@
                 class="input-control" style="padding-left: 2.5rem;">
             <svg style="position: absolute; left: 0.85rem; top: 50%; transform: translateY(-50%); color: #94a3b8;" width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
         </div>
-        <div style="flex: 1; min-width: 160px;">
+        <div style="flex: 1; min-width: 150px;">
             <select name="status" class="input-control" style="background: white;">
                 <option value="">All Statuses</option>
                 @foreach (['Draft', 'Planning', 'In Review', 'Approved', 'Completed', 'Cancelled'] as $st)
@@ -121,27 +121,76 @@
                 @endforeach
             </select>
         </div>
+        <div style="flex: 1; min-width: 140px;">
+            <select name="priority" class="input-control" style="background: white;">
+                <option value="">All Priorities</option>
+                @foreach (['High', 'Medium', 'Low'] as $pr)
+                    <option value="{{ $pr }}" {{ request('priority') === $pr ? 'selected' : '' }}>{{ $pr }} Priority</option>
+                @endforeach
+            </select>
+        </div>
         <div class="filter-actions" style="display: flex; gap: 0.5rem;">
             <button type="submit" class="btn btn-primary" style="padding: 0.7rem 1.25rem;">Filter</button>
-            @if (request()->hasAny(['search', 'status']))
+            @if (request()->hasAny(['search', 'status', 'priority', 'sort']))
                 <a href="{{ route('cases.index') }}" class="btn btn-secondary" style="padding: 0.7rem 1.1rem; color: #64748b;">Reset</a>
             @endif
         </div>
     </form>
 </div>
 
+@php
+    function sortUrl($column, $currentSort, $currentDirection) {
+        $newDirection = ($currentSort === $column && $currentDirection === 'asc') ? 'desc' : 'asc';
+        return request()->fullUrlWithQuery(['sort' => $column, 'direction' => $newDirection]);
+    }
+    function sortIndicator($column, $currentSort, $currentDirection) {
+        if ($currentSort !== $column) return '⇅';
+        return $currentDirection === 'asc' ? '▲' : '▼';
+    }
+@endphp
+
 <!-- Desktop / Tablet Table View -->
 <div class="table-container">
     <table class="data-table">
         <thead>
             <tr>
-                <th>Case Number</th>
-                <th>Patient Ref</th>
-                <th>Surgeon</th>
+                <th>
+                    <a href="{{ sortUrl('case_number', $sortBy ?? 'id', $direction ?? 'asc') }}" style="text-decoration: none; color: inherit; display: inline-flex; align-items: center; gap: 0.35rem;">
+                        <span>Case Number</span>
+                        <span style="font-size: 0.75rem; color: var(--primary);">{{ sortIndicator('case_number', $sortBy ?? 'id', $direction ?? 'asc') }}</span>
+                    </a>
+                </th>
+                <th>
+                    <a href="{{ sortUrl('patient_reference', $sortBy ?? 'id', $direction ?? 'asc') }}" style="text-decoration: none; color: inherit; display: inline-flex; align-items: center; gap: 0.35rem;">
+                        <span>Patient Ref</span>
+                        <span style="font-size: 0.75rem; color: var(--primary);">{{ sortIndicator('patient_reference', $sortBy ?? 'id', $direction ?? 'asc') }}</span>
+                    </a>
+                </th>
+                <th>
+                    <a href="{{ sortUrl('surgeon_name', $sortBy ?? 'id', $direction ?? 'asc') }}" style="text-decoration: none; color: inherit; display: inline-flex; align-items: center; gap: 0.35rem;">
+                        <span>Surgeon</span>
+                        <span style="font-size: 0.75rem; color: var(--primary);">{{ sortIndicator('surgeon_name', $sortBy ?? 'id', $direction ?? 'asc') }}</span>
+                    </a>
+                </th>
                 <th>Implant Type</th>
-                <th>Status</th>
-                <th>Priority</th>
-                <th>Surgery Date</th>
+                <th>
+                    <a href="{{ sortUrl('status', $sortBy ?? 'id', $direction ?? 'asc') }}" style="text-decoration: none; color: inherit; display: inline-flex; align-items: center; gap: 0.35rem;">
+                        <span>Status</span>
+                        <span style="font-size: 0.75rem; color: var(--primary);">{{ sortIndicator('status', $sortBy ?? 'id', $direction ?? 'asc') }}</span>
+                    </a>
+                </th>
+                <th>
+                    <a href="{{ sortUrl('priority', $sortBy ?? 'id', $direction ?? 'asc') }}" style="text-decoration: none; color: inherit; display: inline-flex; align-items: center; gap: 0.35rem;">
+                        <span>Priority</span>
+                        <span style="font-size: 0.75rem; color: var(--primary);">{{ sortIndicator('priority', $sortBy ?? 'id', $direction ?? 'asc') }}</span>
+                    </a>
+                </th>
+                <th>
+                    <a href="{{ sortUrl('surgery_date', $sortBy ?? 'id', $direction ?? 'asc') }}" style="text-decoration: none; color: inherit; display: inline-flex; align-items: center; gap: 0.35rem;">
+                        <span>Surgery Date</span>
+                        <span style="font-size: 0.75rem; color: var(--primary);">{{ sortIndicator('surgery_date', $sortBy ?? 'id', $direction ?? 'asc') }}</span>
+                    </a>
+                </th>
                 <th style="text-align: right;">Actions</th>
             </tr>
         </thead>

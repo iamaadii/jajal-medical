@@ -104,11 +104,20 @@
                 </div>
 
                 <div>
-                    <label for="surgery_date" style="display: block; font-size: 0.85rem; font-weight: 700; color: #334155; margin-bottom: 0.45rem;">
-                        Surgery Date
+                    <label for="surgery_date" style="display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; font-weight: 700; color: #334155; margin-bottom: 0.45rem;">
+                        <span>Surgery Date</span>
+                        <span id="holiday_badge" style="font-size: 0.725rem; font-weight: 600; padding: 0.2rem 0.6rem; border-radius: 4px; transition: all 0.2s;" title="Source: Nager.Date Public API">
+                            @if (!empty($todayHolidays))
+                                <span style="background: #fef3c7; color: #b45309;">📅 Today is {{ $todayHolidays[0]['name'] }}</span>
+                            @else
+                                <span style="background: #f1f5f9; color: #64748b;">📅 Today: Workday</span>
+                            @endif
+                        </span>
                     </label>
                     <input id="surgery_date" type="date" name="surgery_date" value="{{ old('surgery_date', $case->surgery_date ? $case->surgery_date->format('Y-m-d') : '') }}"
-                        class="input-control {{ $errors->has('surgery_date') ? 'input-error' : '' }}" style="background: white;">
+                        class="input-control {{ $errors->has('surgery_date') ? 'input-error' : '' }}" style="background: white;"
+                        onchange="checkDateHoliday(this.value)">
+                    <div id="selected_date_holiday_notice" style="margin-top: 0.4rem; font-size: 0.8rem; font-weight: 600; display: none;"></div>
                     @error('surgery_date')
                         <p style="color: #ef4444; font-size: 0.825rem; margin-top: 0.4rem; font-weight: 600;">{{ $message }}</p>
                     @enderror
@@ -126,4 +135,51 @@
         </form>
     </div>
 </div>
+
+<script>
+    async function checkDateHoliday(dateStr) {
+        const noticeEl = document.getElementById('selected_date_holiday_notice');
+        if (!dateStr) {
+            noticeEl.style.display = 'none';
+            return;
+        }
+
+        const year = dateStr.split('-')[0];
+        try {
+            const res = await fetch(`https://date.nager.at/api/v3/PublicHolidays/${year}/US`);
+            if (res.ok) {
+                const holidays = await res.json();
+                const found = holidays.find(h => h.date === dateStr);
+                if (found) {
+                    noticeEl.style.display = 'block';
+                    noticeEl.style.color = '#b45309';
+                    noticeEl.style.background = '#fef3c7';
+                    noticeEl.style.padding = '0.4rem 0.75rem';
+                    noticeEl.style.borderRadius = '6px';
+                    noticeEl.style.border = '1px solid #fde68a';
+                    noticeEl.innerHTML = `⚠️ Note: <strong>${found.name}</strong> is a public holiday on this date.`;
+                    return;
+                }
+            }
+        } catch (e) {
+            // fail gracefully
+        }
+
+        noticeEl.style.display = 'block';
+        noticeEl.style.color = '#047857';
+        noticeEl.style.background = '#ecfdf5';
+        noticeEl.style.padding = '0.4rem 0.75rem';
+        noticeEl.style.borderRadius = '6px';
+        noticeEl.style.border = '1px solid #a7f3d0';
+        noticeEl.innerHTML = `✓ Regular clinical workday (no public holiday conflicts).`;
+    }
+
+    // Auto-check on load if already set
+    window.addEventListener('DOMContentLoaded', () => {
+        const input = document.getElementById('surgery_date');
+        if (input && input.value) {
+            checkDateHoliday(input.value);
+        }
+    });
+</script>
 @endsection

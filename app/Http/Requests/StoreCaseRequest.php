@@ -9,7 +9,7 @@ class StoreCaseRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user() && strtolower($this->user()->role) === 'admin';
+        return $this->user() && in_array(strtolower($this->user()->role), ['admin', 'engineer']);
     }
 
     public function rules(): array

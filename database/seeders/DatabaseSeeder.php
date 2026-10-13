@@ -23,6 +23,15 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
+        $engineer = User::firstOrCreate(
+            ['email' => 'engineer@jajalmedical.com'],
+            [
+                'name' => 'Engineer User',
+                'password' => Hash::make('password123'),
+                'role' => 'Engineer',
+            ]
+        );
+
         $viewer = User::firstOrCreate(
             ['email' => 'viewer@jajalmedical.com'],
             [
@@ -45,16 +54,18 @@ class DatabaseSeeder extends Seeder
         ];
 
         for ($i = 1; $i <= 25; $i++) {
-            MedicalCase::create([
-                'case_number' => sprintf('CASE-%04d', $i),
-                'patient_reference' => 'PAT-' . str_pad((string) $i, 4, '0', STR_PAD_LEFT),
-                'surgeon_name' => $surgeons[($i - 1) % count($surgeons)],
-                'implant_type' => $implantTypes[($i - 1) % count($implantTypes)],
-                'status' => $statuses[($i - 1) % count($statuses)],
-                'priority' => $priorities[($i - 1) % count($priorities)],
-                'surgery_date' => now()->addDays($i * 2)->format('Y-m-d'),
-                'created_by' => $admin->id,
-            ]);
+            MedicalCase::firstOrCreate(
+                ['case_number' => sprintf('CASE-%04d', $i)],
+                [
+                    'patient_reference' => 'PAT-' . str_pad((string) $i, 4, '0', STR_PAD_LEFT),
+                    'surgeon_name' => $surgeons[($i - 1) % count($surgeons)],
+                    'implant_type' => $implantTypes[($i - 1) % count($implantTypes)],
+                    'status' => $statuses[($i - 1) % count($statuses)],
+                    'priority' => $priorities[($i - 1) % count($priorities)],
+                    'surgery_date' => now()->addDays($i * 2)->format('Y-m-d'),
+                    'created_by' => $admin->id,
+                ]
+            );
         }
     }
 }
