@@ -53,6 +53,12 @@
                 <p style="font-size: 1rem; font-weight: 600; color: #0f172a; margin-top: 0.25rem;">{{ $case->implant_type }}</p>
             </div>
             <div>
+                <span style="font-size: 0.775rem; text-transform: uppercase; color: #64748b; font-weight: 700; letter-spacing: 0.05em;">Status</span>
+                <p style="margin-top: 0.25rem;">
+                    <span class="badge badge-{{ str_replace(' ', '-', $case->status) }}">{{ $case->status }}</span>
+                </p>
+            </div>
+            <div>
                 <span style="font-size: 0.775rem; text-transform: uppercase; color: #64748b; font-weight: 700; letter-spacing: 0.05em;">Priority</span>
                 <p style="font-size: 1rem; margin-top: 0.25rem;" class="priority-{{ $case->priority }}">{{ $case->priority }}</p>
             </div>
