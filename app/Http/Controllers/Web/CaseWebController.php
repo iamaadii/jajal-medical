@@ -40,7 +40,7 @@ class CaseWebController extends Controller
             $query->where('status', $request->input('status'));
         }
 
-        $cases = $query->latest('id')->paginate(10)->withQueryString();
+        $cases = $query->orderBy('id', 'asc')->paginate(10)->withQueryString();
 
         return view('cases.index', compact('cases'));
     }

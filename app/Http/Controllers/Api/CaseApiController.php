@@ -28,7 +28,7 @@ class CaseApiController extends Controller
             $query->where('status', $request->input('status'));
         }
 
-        $cases = $query->latest('id')->paginate(10);
+        $cases = $query->orderBy('id', 'asc')->paginate(10);
 
         return response()->json([
             'success' => true,
