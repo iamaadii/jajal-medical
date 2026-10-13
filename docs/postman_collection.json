@@ -1,0 +1,243 @@
+{
+  "info": {
+    "name": "Jajal Medical Case Management API",
+    "description": "Complete collection to test all medical case endpoints with status codes and role-based access.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://127.0.0.1:8000/api",
+      "type": "string"
+    },
+    {
+      "key": "admin_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "viewer_token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Auth - Login as Admin (200 OK)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Accept", "value": "application/json" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"admin@jajalmedical.com\",\n  \"password\": \"password123\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/login",
+          "host": ["{{base_url}}"],
+          "path": ["login"]
+        }
+      }
+    },
+    {
+      "name": "2. Auth - Login as Viewer (200 OK)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Accept", "value": "application/json" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"viewer@jajalmedical.com\",\n  \"password\": \"password123\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/login",
+          "host": ["{{base_url}}"],
+          "path": ["login"]
+        }
+      }
+    },
+    {
+      "name": "3. Auth - Invalid Login (401 Unauthorized)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Accept", "value": "application/json" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"admin@jajalmedical.com\",\n  \"password\": \"wrong_password\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/login",
+          "host": ["{{base_url}}"],
+          "path": ["login"]
+        }
+      }
+    },
+    {
+      "name": "4. Cases - List Cases (200 OK)",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Accept", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{admin_token}}" }
+        ],
+        "url": {
+          "raw": "{{base_url}}/cases?page=1",
+          "host": ["{{base_url}}"],
+          "path": ["cases"],
+          "query": [
+            { "key": "page", "value": "1" },
+            { "key": "status", "value": "Planning", "disabled": true },
+            { "key": "search", "value": "House", "disabled": true }
+          ]
+        }
+      }
+    },
+    {
+      "name": "5. Cases - Get Single Case (200 OK)",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Accept", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{admin_token}}" }
+        ],
+        "url": {
+          "raw": "{{base_url}}/cases/1",
+          "host": ["{{base_url}}"],
+          "path": ["cases", "1"]
+        }
+      }
+    },
+    {
+      "name": "6. Cases - Create Case (Admin) (201 Created)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Accept", "value": "application/json" },
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{admin_token}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"case_number\": \"CASE-9999\",\n  \"patient_reference\": \"PAT-8812\",\n  \"surgeon_name\": \"Dr. Stephen Strange\",\n  \"implant_type\": \"Titanium Cranial Plate 3D-Custom\",\n  \"status\": \"Planning\",\n  \"priority\": \"High\",\n  \"surgery_date\": \"2026-12-15\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/cases",
+          "host": ["{{base_url}}"],
+          "path": ["cases"]
+        }
+      }
+    },
+    {
+      "name": "7. Cases - Create Duplicate Case (422 Validation Error)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Accept", "value": "application/json" },
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{admin_token}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"case_number\": \"CASE-0001\",\n  \"patient_reference\": \"PAT-0001\",\n  \"surgeon_name\": \"Dr. Wilson\",\n  \"implant_type\": \"Ceramic Hip Prosthesis\",\n  \"status\": \"Approved\",\n  \"priority\": \"Medium\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/cases",
+          "host": ["{{base_url}}"],
+          "path": ["cases"]
+        }
+      }
+    },
+    {
+      "name": "8. Cases - Create as Viewer (403 Forbidden)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Accept", "value": "application/json" },
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{viewer_token}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"case_number\": \"CASE-8888\",\n  \"patient_reference\": \"PAT-8888\",\n  \"surgeon_name\": \"Dr. Wilson\",\n  \"implant_type\": \"Titanium Plate\",\n  \"status\": \"Draft\",\n  \"priority\": \"Low\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/cases",
+          "host": ["{{base_url}}"],
+          "path": ["cases"]
+        }
+      }
+    },
+    {
+      "name": "9. Cases - Update Case (Admin) (200 OK)",
+      "request": {
+        "method": "PUT",
+        "header": [
+          { "key": "Accept", "value": "application/json" },
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{admin_token}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"case_number\": \"CASE-0001\",\n  \"patient_reference\": \"PAT-0001-MOD\",\n  \"surgeon_name\": \"Dr. Sarah Connor\",\n  \"implant_type\": \"Custom Titanium Mesh Floor\",\n  \"status\": \"Approved\",\n  \"priority\": \"High\",\n  \"surgery_date\": \"2026-11-30\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/cases/1",
+          "host": ["{{base_url}}"],
+          "path": ["cases", "1"]
+        }
+      }
+    },
+    {
+      "name": "10. Cases - Delete as Viewer (403 Forbidden)",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          { "key": "Accept", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{viewer_token}}" }
+        ],
+        "url": {
+          "raw": "{{base_url}}/cases/1",
+          "host": ["{{base_url}}"],
+          "path": ["cases", "1"]
+        }
+      }
+    },
+    {
+      "name": "11. Cases - Delete as Admin (200 OK)",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          { "key": "Accept", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{admin_token}}" }
+        ],
+        "url": {
+          "raw": "{{base_url}}/cases/25",
+          "host": ["{{base_url}}"],
+          "path": ["cases", "25"]
+        }
+      }
+    },
+    {
+      "name": "12. Auth - Logout (200 OK)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Accept", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{admin_token}}" }
+        ],
+        "url": {
+          "raw": "{{base_url}}/logout",
+          "host": ["{{base_url}}"],
+          "path": ["logout"]
+        }
+      }
+    }
+  ]
+}

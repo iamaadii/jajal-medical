@@ -78,6 +78,18 @@ php artisan test --filter=CaseManagementFeatureTest
 
 ---
 
+## Postman API Collection
+
+A complete Postman Collection is exported directly in the repository at:
+📁 **[`docs/postman_collection.json`](docs/postman_collection.json)**
+
+To test:
+1. Open Postman -> Click **Import**.
+2. Select the file `docs/postman_collection.json`.
+3. All 12 requests with URLs, headers, bodies, and variables will be imported ready to run.
+
+---
+
 ## REST API Endpoints
 
 All responses follow the consistent shape:
