@@ -37,7 +37,7 @@ This document explains how to host the Medical Case Management app on Amazon Web
 2. **Server Setup**: Launch an EC2 instance (`t3.medium`) and install Nginx, PHP 8.4, and Composer.
 3. **Deploy Application**:
    ```bash
-   git clone https://github.com/iamaadii/php-project.git /var/www/medical-cases
+   git clone https://github.com/iamaadii/jajal-medical.git /var/www/medical-cases
    cd /var/www/medical-cases
    composer install --no-dev --optimize-autoloader
    php artisan migrate --force
@@ -45,3 +45,12 @@ This document explains how to host the Medical Case Management app on Amazon Web
    php artisan route:cache
    ```
 4. **Connect Load Balancer & Domain**: Point Route 53 DNS records to the Load Balancer with HTTPS enabled.
+
+---
+
+## 4. Live Cloud Hosting (Render + Aiven MySQL)
+
+In addition to the AWS reference architecture, a live containerized deployment is running:
+* **Application Platform:** Render Web Service (Docker container)
+* **Cloud Database:** Aiven Managed MySQL 8.4 with SSL
+* **SSL/TLS:** Automated wildcard certificate termination on Render reverse proxy with Laravel HTTPS forced scheme.

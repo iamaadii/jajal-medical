@@ -17,8 +17,8 @@ A web application designed for medical device companies to track custom implant 
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/iamaadii/php-project.git
-cd php-project
+git clone https://github.com/iamaadii/jajal-medical.git
+cd jajal-medical
 ```
 
 ### 2. Environment Configuration
@@ -65,8 +65,28 @@ Access the application at `http://localhost:8000`.
 | Role | Email | Password | Permissions |
 |---|---|---|---|
 | **Admin** | `admin@jajalmedical.com` | `password123` | Full access: View, Create, Edit, Delete |
-| **Engineer** | `engineer@jajalmedical.com` | `password123` | View, Create, Edit (cannot delete) |
+| **Engineer** (Bonus) | `engineer@jajalmedical.com` | `password123` | View, Create, Edit (cannot delete) |
 | **Viewer** | `viewer@jajalmedical.com` | `password123` | View only (blocked from edit & delete) |
+
+---
+
+## Implemented Bonus Features
+
+1. **Third User Role (Engineer)**:
+   - Full permission to browse, create, and amend surgical cases.
+   - Deletion permissions strictly blocked via Laravel Policy authorization.
+2. **Priority Field & Multi-Filter**:
+   - Case records include priority levels (`High`, `Medium`, `Low`).
+   - Case Directory supports simultaneous combined filtering by Search term, Status, and Priority.
+3. **Clickable Column Sorting**:
+   - Table columns (`Case Number`, `Patient Ref`, `Surgeon`, `Status`, `Priority`, `Surgery Date`) feature bidirectional sort toggles (`▲` / `▼`).
+4. **Public Holiday API Integration**:
+   - Direct integration with **Nager.Date Public API** (`https://date.nager.at/api/v3`).
+   - Automatically detects and displays public holiday notices beside scheduled surgery dates with graceful fallback.
+5. **Center Verification Modal**:
+   - Accidental deletion prevention via a centered modal with backdrop blur.
+6. **Mobile-First Responsive Layout**:
+   - Full mobile adaptations: collapsible hamburger navigation, touch-friendly action cards, and centered pagination.
 
 ---
 
@@ -106,14 +126,14 @@ All responses follow the consistent shape:
 |---|---|---|---|
 | `POST` | `/api/login` | Obtain Sanctum bearer token | Anyone |
 | `POST` | `/api/logout` | Revoke current bearer token | Authenticated |
-| `GET` | `/api/cases` | List paginated cases (filters: `search`, `status`) | Admin, Viewer |
-| `POST` | `/api/cases` | Create a new case | Admin |
-| `GET` | `/api/cases/{id}` | Retrieve case details by ID | Admin, Viewer |
-| `PUT` | `/api/cases/{id}` | Update an existing case | Admin |
-| `DELETE` | `/api/cases/{id}` | Delete a case | Admin |
+| `GET` | `/api/cases` | List paginated cases (filters: `search`, `status`, `priority`, `sort`) | Admin, Engineer, Viewer |
+| `POST` | `/api/cases` | Create a new case | Admin, Engineer |
+| `GET` | `/api/cases/{id}` | Retrieve case details by ID | Admin, Engineer, Viewer |
+| `PUT` | `/api/cases/{id}` | Update an existing case | Admin, Engineer |
+| `DELETE` | `/api/cases/{id}` | Delete a case | Admin only |
 
 ---
 
 ## Assumptions and Known Limitations
 - Dummy medical codes and patient references are used exclusively.
-- Production hosting requires configuring an external managed MySQL database (e.g. AWS RDS or PlanetScale/Aiven) and HTTPS termination.
+- Production hosting utilizes Render container deployment with an external managed Aiven MySQL database and SSL termination.
