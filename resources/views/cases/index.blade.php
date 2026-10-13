@@ -1,80 +1,94 @@
 @extends('layouts.app')
 
-@section('title', 'Cases List')
+@section('title', 'Case Directory')
 
 @section('content')
-<div style="margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+<div style="margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1.25rem;">
     <div>
-        <h1 style="font-size: 1.5rem; font-weight: 800; color: #0f172a;">Cases</h1>
-        <p style="color: #64748b; font-size: 0.875rem;">Manage and monitor all surgical implant cases</p>
+        <h1 style="font-size: 1.85rem; font-weight: 800; color: #0f172a; letter-spacing: -0.03em;">Case Directory</h1>
+        <p style="color: #64748b; font-size: 0.925rem; margin-top: 0.3rem;">Real-time searchable register of custom surgical cases</p>
     </div>
     @can('create', App\Models\MedicalCase::class)
-        <a href="{{ route('cases.create') }}" class="btn btn-primary">+ Create New Case</a>
+        <a href="{{ route('cases.create') }}" class="btn btn-primary">
+            <span>+ Create New Case</span>
+        </a>
     @endcan
 </div>
 
-<div class="card" style="margin-bottom: 1.5rem; padding: 1.1rem;">
+<div class="card" style="margin-bottom: 1.75rem; padding: 1.25rem;">
     <form method="GET" action="{{ route('cases.index') }}" style="display: flex; gap: 0.85rem; flex-wrap: wrap; align-items: center;">
-        <div style="flex: 1; min-width: 220px;">
-            <input type="text" name="search" value="{{ request('search') }}" placeholder="Search Case # or Surgeon..."
-                style="width: 100%; padding: 0.55rem 0.85rem; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.875rem;">
+        <div style="flex: 2; min-width: 240px; position: relative;">
+            <input type="text" name="search" value="{{ request('search') }}" placeholder="Search by Case # (e.g. CASE-0001) or Surgeon..."
+                class="input-control" style="padding-left: 2.5rem;">
+            <svg style="position: absolute; left: 0.85rem; top: 50%; transform: translateY(-50%); color: #94a3b8;" width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
         </div>
-        <div style="min-width: 160px;">
-            <select name="status" style="width: 100%; padding: 0.55rem 0.85rem; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.875rem; background: white;">
+        <div style="flex: 1; min-width: 170px;">
+            <select name="status" class="input-control" style="background: white;">
                 <option value="">All Statuses</option>
                 @foreach (['Draft', 'Planning', 'In Review', 'Approved', 'Completed', 'Cancelled'] as $st)
                     <option value="{{ $st }}" {{ request('status') === $st ? 'selected' : '' }}>{{ $st }}</option>
                 @endforeach
             </select>
         </div>
-        <button type="submit" class="btn btn-secondary">Filter</button>
-        @if (request()->hasAny(['search', 'status']))
-            <a href="{{ route('cases.index') }}" class="btn btn-secondary" style="color: #64748b;">Clear</a>
-        @endif
+        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+            <button type="submit" class="btn btn-primary" style="padding: 0.7rem 1.25rem;">Filter</button>
+            @if (request()->hasAny(['search', 'status']))
+                <a href="{{ route('cases.index') }}" class="btn btn-secondary" style="padding: 0.7rem 1.1rem; color: #64748b;">Reset</a>
+            @endif
+        </div>
     </form>
 </div>
 
-<div class="card" style="padding: 0; overflow-x: auto;">
-    <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.875rem;">
+<div class="table-container">
+    <table class="data-table">
         <thead>
-            <tr style="background: #f8fafc; border-bottom: 1px solid #e2e8f0; color: #475569; font-weight: 700; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.04em;">
-                <th style="padding: 0.85rem 1.25rem;">Case Number</th>
-                <th style="padding: 0.85rem 1rem;">Patient Ref</th>
-                <th style="padding: 0.85rem 1rem;">Surgeon</th>
-                <th style="padding: 0.85rem 1rem;">Implant Type</th>
-                <th style="padding: 0.85rem 1rem;">Status</th>
-                <th style="padding: 0.85rem 1rem;">Priority</th>
-                <th style="padding: 0.85rem 1rem;">Surgery Date</th>
-                <th style="padding: 0.85rem 1.25rem; text-align: right;">Actions</th>
+            <tr>
+                <th>Case Number</th>
+                <th>Patient Ref</th>
+                <th>Surgeon</th>
+                <th>Implant Type</th>
+                <th>Status</th>
+                <th>Priority</th>
+                <th>Surgery Date</th>
+                <th style="text-align: right;">Actions</th>
             </tr>
         </thead>
         <tbody>
             @forelse ($cases as $c)
-                <tr style="border-bottom: 1px solid #f1f5f9;">
-                    <td style="padding: 0.85rem 1.25rem; font-weight: 700; color: #0284c7;">
-                        <a href="{{ route('cases.show', $c) }}" style="text-decoration: none; color: inherit;">{{ $c->case_number }}</a>
+                <tr>
+                    <td>
+                        <a href="{{ route('cases.show', $c) }}" style="text-decoration: none; font-weight: 700; color: var(--primary); display: flex; align-items: center; gap: 0.4rem;">
+                            <span class="code-pill" style="color: var(--primary); background: var(--primary-light);">{{ $c->case_number }}</span>
+                        </a>
                     </td>
-                    <td style="padding: 0.85rem 1rem; color: #334155;">{{ $c->patient_reference }}</td>
-                    <td style="padding: 0.85rem 1rem; color: #334155;">{{ $c->surgeon_name }}</td>
-                    <td style="padding: 0.85rem 1rem; color: #64748b;">{{ $c->implant_type }}</td>
-                    <td style="padding: 0.85rem 1rem;">
-                        <span class="badge badge-{{ str_replace(' ', '-', $c->status) }}">{{ $c->status }}</span>
+                    <td><span class="code-pill">{{ $c->patient_reference }}</span></td>
+                    <td style="font-weight: 600; color: #1e293b;">{{ $c->surgeon_name }}</td>
+                    <td style="color: #64748b; max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="{{ $c->implant_type }}">{{ $c->implant_type }}</td>
+                    <td>
+                        <span class="badge badge-{{ str_replace(' ', '-', $c->status) }}">
+                            <span>●</span> {{ $c->status }}
+                        </span>
                     </td>
-                    <td style="padding: 0.85rem 1rem;">
-                        <span class="priority-{{ $c->priority }}">{{ $c->priority }}</span>
+                    <td>
+                        <span class="priority-indicator priority-{{ $c->priority }}">
+                            <span class="priority-dot"></span>
+                            <span>{{ $c->priority }}</span>
+                        </span>
                     </td>
-                    <td style="padding: 0.85rem 1rem; color: #64748b;">{{ $c->surgery_date ? $c->surgery_date->format('Y-m-d') : '—' }}</td>
-                    <td style="padding: 0.85rem 1.25rem; text-align: right;">
-                        <div style="display: inline-flex; gap: 0.4rem;">
-                            <a href="{{ route('cases.show', $c) }}" class="btn btn-secondary btn-sm">View</a>
+                    <td style="color: #64748b;">
+                        {{ $c->surgery_date ? $c->surgery_date->format('M d, Y') : '—' }}
+                    </td>
+                    <td style="text-align: right; white-space: nowrap;">
+                        <div style="display: inline-flex; gap: 0.45rem;">
+                            <a href="{{ route('cases.show', $c) }}" class="btn btn-secondary btn-sm" title="View details">View</a>
                             @can('update', $c)
-                                <a href="{{ route('cases.edit', $c) }}" class="btn btn-secondary btn-sm">Edit</a>
+                                <a href="{{ route('cases.edit', $c) }}" class="btn btn-secondary btn-sm" title="Edit case">Edit</a>
                             @endcan
                             @can('delete', $c)
-                                <form action="{{ route('cases.destroy', $c) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete case {{ $c->case_number }}?');" style="margin: 0;">
+                                <form action="{{ route('cases.destroy', $c) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete case {{ $c->case_number }}?');" style="margin: 0; display: inline;">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                    <button type="submit" class="btn btn-danger btn-sm" title="Delete case">Delete</button>
                                 </form>
                             @endcan
                         </div>
@@ -82,8 +96,10 @@
                 </tr>
             @empty
                 <tr>
-                    <td colspan="8" style="padding: 2.5rem; text-align: center; color: #64748b;">
-                        No cases found matching your criteria.
+                    <td colspan="8" style="padding: 3.5rem 1.5rem; text-align: center; color: #64748b;">
+                        <div style="font-size: 2.2rem; margin-bottom: 0.75rem;">📂</div>
+                        <h4 style="font-size: 1.1rem; color: #1e293b; font-weight: 700;">No cases found</h4>
+                        <p style="font-size: 0.875rem; margin-top: 0.35rem;">Try adjusting your search query or status filter.</p>
                     </td>
                 </tr>
             @endforelse
@@ -91,7 +107,7 @@
     </table>
 </div>
 
-<div style="margin-top: 1.5rem;">
+<div style="margin-top: 2rem;">
     {{ $cases->links() }}
 </div>
 @endsection
