@@ -18,5 +18,9 @@ class AppServiceProvider extends ServiceProvider
     {
         Gate::policy(MedicalCase::class, CasePolicy::class);
         Paginator::useBootstrapFive();
+
+        if (app()->environment('production') || request()->header('X-Forwarded-Proto') === 'https') {
+            \Illuminate\Support\Facades\URL::forceScheme('https');
+        }
     }
 }
